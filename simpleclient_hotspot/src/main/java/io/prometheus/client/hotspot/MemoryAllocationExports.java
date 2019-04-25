@@ -1,7 +1,5 @@
 package io.prometheus.client.hotspot;
 
-import com.sun.management.GarbageCollectionNotificationInfo;
-import com.sun.management.GcInfo;
 import io.prometheus.client.Collector;
 import io.prometheus.client.Counter;
 
@@ -9,6 +7,7 @@ import javax.management.Notification;
 import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
+
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
@@ -45,10 +44,12 @@ public class MemoryAllocationExports extends Collector {
 
     @Override
     public synchronized void handleNotification(Notification notification, Object handback) {
-      GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
-      GcInfo gcInfo = info.getGcInfo();
-      Map<String, MemoryUsage> memoryUsageBeforeGc = gcInfo.getMemoryUsageBeforeGc();
-      Map<String, MemoryUsage> memoryUsageAfterGc = gcInfo.getMemoryUsageAfterGc();
+      CompositeData userData = (CompositeData) notification.getUserData();
+      CompositeData gcInfo = (CompositeData) userData.get("gcInfo"); // equal to GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from(userData).getGcInfo();
+
+      Map<String, MemoryUsage> memoryUsageBeforeGc = (Map<String, MemoryUsage>) gcInfo.get("memoryUsageBeforeGc"); // gcInfo.getMemoryUsageBeforeGc();
+      Map<String, MemoryUsage> memoryUsageAfterGc = (Map<String, MemoryUsage>) gcInfo.get("memoryUsageAfterGc");   // gcInfo.getMemoryUsageAfterGc();
+
       for (Map.Entry<String, MemoryUsage> entry : memoryUsageBeforeGc.entrySet()) {
         String memoryPool = entry.getKey();
         long before = entry.getValue().getUsed();
