@@ -40,7 +40,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Import-Package>com.google.common.cache;version="[18.0,30)", *</Import-Package>
+                        <Import-Package>com.google.common.cache;version="[21.0,50)", *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>21.0</version>
         </dependency>
 
 
