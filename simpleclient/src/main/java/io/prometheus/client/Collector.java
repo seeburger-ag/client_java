@@ -152,11 +152,11 @@ public abstract class Collector {
     public String[] getNames() {
       switch (type) {
         case COUNTER:
-          return new String[]{
-                  name + "_total",
-                  name + "_created",
-                  name
-          };
+          if (Environment.includeCreatedSeries()) {
+            return new String[]{name + "_total", name + "_created", name};
+          } else {
+            return new String[]{name + "_total", name};
+          }
         case SUMMARY:
           return new String[]{
                   name + "_count",
@@ -196,7 +196,7 @@ public abstract class Collector {
         return false;
       }
       MetricFamilySamples other = (MetricFamilySamples) obj;
-      
+
       return other.name.equals(name)
         && other.unit.equals(unit)
         && other.type.equals(type)
@@ -389,7 +389,7 @@ public abstract class Collector {
   public static String doubleToGoString(double d) {
     if (d == Double.POSITIVE_INFINITY) {
       return "+Inf";
-    } 
+    }
     if (d == Double.NEGATIVE_INFINITY) {
       return "-Inf";
     }

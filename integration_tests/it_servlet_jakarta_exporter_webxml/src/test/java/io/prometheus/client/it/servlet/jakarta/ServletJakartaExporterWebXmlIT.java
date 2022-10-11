@@ -30,6 +30,7 @@ public class ServletJakartaExporterWebXmlIT {
     @Rule
     public DockerContainer dockerContainer = new DockerContainer()
             .withExposedPorts(8080)
+            .withEnv("PROMETHEUS_ENABLE_CREATED_SERIES", "true")
             .waitingFor(Wait.forLogMessage(".*oejs.Server:main: Started Server.*", 1));
 
     @Test
